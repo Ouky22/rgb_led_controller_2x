@@ -65,6 +65,9 @@ int rgbWakeupIsRunning = false;
 
 const char commandSeperator = '.';
 
+// wifi reset time = 7200000 ms = 2 hours
+long wifiResetTime = 7200000;
+
 
 void setup() {
   pinMode(redPin1, OUTPUT);
@@ -84,6 +87,12 @@ void loop() {
     setRgbShowColors();
   else if (rgbWakeupIsRunning)
     setWakeupBrightness();
+
+  // reset wifi because of unknown connection bug
+  if (millis() % wifiResetTime == 0) {
+    WiFi.disconnect();
+    initWifi();
+  }
 
   while(WiFi.status() != WL_CONNECTED) {
     WiFi.reconnect();
